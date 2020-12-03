@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>winnie-s-universe-tour</title>
+		<link href="css/style.css" rel="stylesheet" />
+	</head>
+	<body>
+		<button onclick="showDoc()">description</button>
+		<div id="wrapper">
+			<div id="food"></div>
+			<div id="winnie"></div>
+		</div>
+	</body>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/common-tools.js"></script>
+	<script>
+		const target = $("#winnie");
+		const food = $("#food");
+
+		var x; 
+		var x1; 
+		var y; 
+		var y1; 
+		var size; 
+		var food_x; 
+		var food_x1; 
+		var food_y; 
+		var food_y1; 
+		var speedup = false;
+		
+		var doc = "press arrow key to move, eat food then be bigger until it fills the screen!";
+		function showDoc(){
+			alert(doc);
+		}
+
+		//move
+		$(document).keydown(function(event) {
+			switch (event.which) {
+				case 37:
+					target.css("left", "-=5px");
+					break;
+				case 38:
+					target.css("top", "-=5px");
+					break;
+				case 39:
+					target.css("left", "+=5px");
+					break;
+				case 40:
+					target.css("top", "+=5px");
+					break;
+				default:
+					break;
+			}
+		})
+
+		// game
+		var timer = setInterval(function() {
+			size = parseInt(target.css("width"))
+			x = parseInt(target.css("left"));
+			x1 = x + size;
+			y = parseInt(target.css("top"));
+			y1 = y + size;
+
+			if (x < 0 || x > 700 - size || y < 0 || y > 700 - size) {
+				gameOver("winnie dead.");
+			}
+			if (size >= 700) {
+				gameOver("Winnie conquered the whole universe! You win the game!");
+			}
+			if (x <= food_x && x1 >= food_x1 && y <= food_y && y1 >= food_y1) {
+				size += 10;
+				target.css("width", size);
+				target.css("height", size);
+				createFood();
+				if (size >= 200 && size < 400) {
+					target.css("background-image", "url(resources/2.jpg)");
+				} else if (size >= 400) {
+					if(!speedup){
+						speedup = true;
+						alert("Ready to speedup?");
+					}
+					target.css("background-image", "url(resources/3.jpg)");
+				}
+			}
+		}, 100)
+
+
+		//create food
+		createFood();
+		function createFood() {
+			if(size<380){
+				food_x = ranNumGen(10, 660);
+				food_y = ranNumGen(10, 660);
+			}else {
+				food_x = ranNumGen(0, 200);
+				food_y = ranNumGen(0, 200);
+			}
+
+			food_x1 = food_x + 30;
+			food_y1 = food_y + 30;
+
+			food.css("left", food_x);
+			food.css("top", food_y);
+			food.css("display", "inline-block");
+		}
+
+		// if the game is over
+		function gameOver(msg) {
+			alert(msg);
+			clearInterval(timer);
+			window.location.reload();
+		}
+	</script>
+</html>
